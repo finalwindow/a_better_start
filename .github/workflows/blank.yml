@@ -1,36 +1,81 @@
-# This is a basic workflow to help you get started with Actions
+#name: CI · 多语言语法检查
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ main ]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  syntax-check:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      # ------------------------------------------------------------------
+      # Python
+      # ------------------------------------------------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Python syntax check (compileall)
+        run: python -m compileall . -q
+
+      - name: Python style check (flake8, warnings only)
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          pip install flake8
+          flake8 . --max-line-length=120 --ignore=E501,W503 --exit-zero
+
+      # ------------------------------------------------------------------
+      # C / C++
+      # ------------------------------------------------------------------
+      - name: C/C++ syntax check (g++ -fsyntax-only)
+        run: |
+          find . \( -name "*.c" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" \) \
+            -exec g++ -fsyntax-only {} \;
+
+      # ------------------------------------------------------------------
+      # Java
+      # ------------------------------------------------------------------
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Java syntax check (javac)
+        run: |
+          find . -name "*.java" > sources.txt
+          if [ -s sources.txt ]; then
+            javac -d /tmp @sources.txt
+          else
+            echo "No Java files found, skipping."
+          fi
+
+      # ------------------------------------------------------------------
+      # Node.js
+      # ------------------------------------------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Node.js syntax check (eslint --quiet)
+        run: |
+          if [ -f package.json ]; then
+            npm install
+            npx eslint . --ext .js,.ts --quiet
+          else
+            echo "No package.json found, skipping."
+          fi
+
+      # ------------------------------------------------------------------
+      # Summary
+      # ------------------------------------------------------------------
+      - name: All checks passed
+        run: echo "All syntax checks passed."
