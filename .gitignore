@@ -1,69 +1,151 @@
-# Prerequisites
-*.d
+# ==========================================
+#  操作系统与编辑器残留文件 (OS/Editor artifacts)
+# ==========================================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
 
-# Compiled Object files
-*.slo
-*.lo
+.vscode/
+.idea/
+*.iml
+
+# ==========================================
+#  Python 字节码与虚拟环境 (Python bytecode & virtualenv)
+# ==========================================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+venv/
+.venv/
+env/
+.env/
+
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+*.cover
+
+.ipynb_checkpoints/
+
+# ==========================================
+#  C / C++ 目标文件与二进制 (C/C++ object files & binaries)
+# ==========================================
+# 编译中间文件 (Compilation intermediates)
 *.o
 *.obj
+*.ko
+*.s      # 生成的汇编文件 (Generated assembly)
 
-# Precompiled Headers
-*.gch
-*.pch
-
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
+# 静态库与动态库 (Static & dynamic libraries)
+*.a
+*.lib
 *.so
 *.dylib
 *.dll
-*.so.*
+*.sl
 
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
+# 可执行文件 (Executables)
 *.exe
 *.out
 *.app
 
-# Build directories
-build/
-Build/
-build-*/
+# 预编译头文件 (Precompiled headers)
+*.gch
+*.pch
 
-# CMake generated files
-CMakeFiles/
+# ==========================================
+#  Java 编译产物 (Java build artifacts)
+# ==========================================
+# 字节码文件 (Bytecode)
+*.class
+
+# JAR / WAR / EAR 打包文件 (Packaged archives)
+*.jar
+*.war
+*.ear
+*.sar
+
+# 构建工具输出目录 (Build tool output dirs)
+target/
+classes/
+*.jardesc
+
+# ==========================================
+#  嵌入式 / RISC-V / ARM / 汇编固件 (Embedded / RISC-V / ARM / Assembly firmware)
+# ==========================================
+# 固件镜像与二进制 (Firmware images & raw binaries)
+*.bin
+*.hex
+*.elf
+*.axf
+*.exe     # 某些嵌入式工具生成的 Windows 格式
+
+# 调试与映射文件 (Debug & map files)
+*.map
+*.lst
+*.dump
+*.sym
+*.crf
+
+# 链接器脚本生成文件 (Linker script outputs)
+*.ld
+*.lss
+
+# 烧录工具临时文件 (Programming tool temp files)
+*.flash
+*.eep
+
+# ==========================================
+#  CMake 生成文件 (CMake generated files)
+# ==========================================
+build/
+cmake-build-debug/
+cmake-build-release/
+
 CMakeCache.txt
+CMakeFiles/
 cmake_install.cmake
 Makefile
-install_manifest.txt
 compile_commands.json
+CTestTestfile.cmake
+_cmake_project_*
 
-# Temporary files
-*.tmp
+# ==========================================
+#  密钥与敏感配置（禁止提交）(Secrets & credentials - never commit)
+# ==========================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+config_local.ini
+credentials.json
+
+# 允许提交模板文件，供团队参考 (Allow template file for team reference)
+!.env.example
+
+# ==========================================
+#  日志、临时文件与本地数据库 (Logs, temp files, local DBs)
+# ==========================================
 *.log
-*.bak
-*.swp
-
-# vcpkg
-vcpkg_installed/
-
-# debug information files
-*.dwo
-
-# test output & cache
-Testing/
-.cache/
+*.tmp
+*.cache
+*.pid
+*.seed
+*.sqlite3
+*.db
+*.ldb
