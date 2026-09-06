@@ -38,7 +38,7 @@ def simulate_download(total_size_mb=100, chunk_size_kb=64):
 
     while downloaded < total_bytes:
         # 模拟网络延迟和速度变化（0.1 ~ 1.5 秒/块）
-        sleep_time = random.uniform(0.1, 1.5)
+        sleep_time = random.uniform(0.1, 0.3)
         time.sleep(sleep_time)
 
         # 本次实际下载量（不超过剩余量）
