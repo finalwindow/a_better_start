@@ -1,0 +1,116 @@
+import time
+import random
+import sys
+import math
+
+def format_size(size_bytes):
+    """将字节数转换为人类可读的格式（KB / MB / GB）"""
+    if size_bytes < 1024:
+        return f"{size_bytes:.1f} B"
+    elif size_bytes < 1024 * 1024:
+        return f"{size_bytes / 1024:.1f} KB"
+    elif size_bytes < 1024 * 1024 * 1024:
+        return f"{size_bytes / (1024*1024):.1f} MB"
+    else:
+        return f"{size_bytes / (1024*1024*1024):.1f} GB"
+
+def format_time(seconds):
+    """将秒数转换为 mm:ss 格式"""
+    m = int(seconds // 60)
+    s = int(seconds % 60)
+    return f"{m:02d}:{s:02d}"
+
+def simulate_download(total_size_mb=100, chunk_size_kb=64):
+    """
+    模拟下载过程
+    :param total_size_mb: 文件总大小（MB）
+    :param chunk_size_kb: 每次下载的块大小（KB）
+    """
+    total_bytes = total_size_mb * 1024 * 1024
+    chunk_bytes = chunk_size_kb * 1024
+    downloaded = 0
+    start_time = time.time()
+    last_update = start_time
+    speed_window = []  # 用于计算平均速度
+
+    print(f"开始下载... 总大小: {format_size(total_bytes)}")
+    print("=" * 60)
+
+    while downloaded < total_bytes:
+        # 模拟网络延迟和速度变化（0.1 ~ 1.5 秒/块）
+        sleep_time = random.uniform(0.1, 1.5)
+        time.sleep(sleep_time)
+
+        # 本次实际下载量（不超过剩余量）
+        this_chunk = min(chunk_bytes, total_bytes - downloaded)
+        downloaded += this_chunk
+
+        # 计算当前速度（基于最近几块的平均值）
+        now = time.time()
+        elapsed = now - last_update
+        if elapsed > 0:
+            speed = this_chunk / elapsed  # 字节/秒
+            speed_window.append(speed)
+            if len(speed_window) > 5:  # 保留最近5个速度值
+                speed_window.pop(0)
+            avg_speed = sum(speed_window) / len(speed_window) if speed_window else speed
+        else:
+            avg_speed = 0
+        last_update = now
+
+        # 计算进度
+        progress = downloaded / total_bytes
+        percent = progress * 100
+
+        # 剩余时间估计（基于平均速度）
+        if avg_speed > 0:
+            remaining_bytes = total_bytes - downloaded
+            eta_seconds = remaining_bytes / avg_speed
+            eta_str = format_time(eta_seconds)
+        else:
+            eta_str = "??:??"
+
+        # 构建进度条（宽度50个字符）
+        bar_width = 50
+        filled = int(bar_width * progress)
+        bar = '█' * filled + '░' * (bar_width - filled)
+
+        # 输出信息（使用 \r 覆盖当前行）
+        sys.stdout.write(
+            f"\r进度: |{bar}| {percent:6.2f}%  "
+            f"已下载: {format_size(downloaded)}/{format_size(total_bytes)}  "
+            f"速度: {format_size(avg_speed)}/s  "
+            f"已用: {format_time(now - start_time)}  "
+            f"剩余: {eta_str}"
+        )
+        sys.stdout.flush()
+
+    # 下载完成
+    total_time = time.time() - start_time
+    print("\n" + "=" * 60)
+    print(f"✅ 下载完成！")
+    print(f"总大小: {format_size(total_bytes)}")
+    print(f"总用时: {format_time(total_time)}")
+    print(f"平均速度: {format_size(total_bytes / total_time)}/s")
+
+def main():
+    print("\n===== 模拟下载器 / 资源加载器 =====\n")
+    try:
+        size_input = input("请输入模拟文件大小（MB，直接回车默认100）: ").strip()
+        if size_input == "":
+            size_mb = 100
+        else:
+            size_mb = float(size_input)
+            if size_mb <= 0:
+                print("大小必须大于0，使用默认值100MB。")
+                size_mb = 100
+
+        simulate_download(total_size_mb=size_mb)
+
+    except KeyboardInterrupt:
+        print("\n\n⚠️ 下载被用户中断。")
+    except ValueError:
+        print("输入无效，请使用数字。")
+
+if __name__ == "__main__":
+    main()
