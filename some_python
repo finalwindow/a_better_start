@@ -31,7 +31,7 @@ def simulate_download(total_size_mb=100, chunk_size_kb=64):
     downloaded = 0
     start_time = time.time()
     last_update = start_time
-    speed_window = []  # 用于计算平均速度
+    speed_window = []  # 计算平均速度
 
     print(f"开始下载... 总大小: {format_size(total_bytes)}")
     print("=" * 60)
@@ -88,7 +88,7 @@ def simulate_download(total_size_mb=100, chunk_size_kb=64):
     # 下载完成
     total_time = time.time() - start_time
     print("\n" + "=" * 60)
-    print(f"✅ 下载完成！")
+    print(f" 下载完成！")
     print(f"总大小: {format_size(total_bytes)}")
     print(f"总用时: {format_time(total_time)}")
     print(f"平均速度: {format_size(total_bytes / total_time)}/s")
@@ -108,7 +108,7 @@ def main():
         simulate_download(total_size_mb=size_mb)
 
     except KeyboardInterrupt:
-        print("\n\n⚠️ 下载被用户中断。")
+        print("\n\n 下载被用户中断。")
     except ValueError:
         print("输入无效，请使用数字。")
 
