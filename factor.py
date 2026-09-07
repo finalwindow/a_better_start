@@ -23,6 +23,35 @@ def is_prime(n: int) -> bool:
     return True
 
 def pollard_rho(n: int) -> int:
+    # 修复: 限制最大迭代次数，防止偶发死循环（关联 Issue #编号）
+    MAX_ITER = 10000
+    iter_count = 0
+    
+    if n % 2 == 0: return 2
+    if n % 3 == 0: return 3
+    
+    while True:
+        # 每次重新随机，避免同样参数反复进入死循环
+        c = random.randrange(1, n - 1)
+        x = random.randrange(0, n - 1)
+        y = x
+        d = 1
+        iter_count = 0
+        
+        while d == 1:
+            if iter_count > MAX_ITER:
+                break  # 超过最大迭代，跳出内层循环，外层重试
+            x = (pow(x, 2, n) + c) % n
+            y = (pow(y, 2, n) + c) % n
+            y = (pow(y, 2, n) + c) % n
+            d = math.gcd(abs(x - y), n)
+            iter_count += 1
+            if d == n:
+                break
+        if d != n and d != 1:
+            return d
+        
+def pollard_rho(n: int) -> int:
     if n % 2 == 0: return 2
     if n % 3 == 0: return 3
     while True:
